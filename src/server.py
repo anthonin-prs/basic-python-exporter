@@ -26,7 +26,7 @@ class AppMetrics:
         self.todo_count = Gauge(
             "todo_count", "Current todo elements", ['userid', 'completed'])
         self.todo_done = Gauge(
-            "todo_done", "Current todo status", ['todo_id'])
+            "todo_done", "Current todo status", ['todo_id', 'title'])
 
     def run_metrics_loop(self):
         """Metrics fetching loop"""
@@ -55,11 +55,13 @@ class AppMetrics:
             if task["completed"] == False:
                 self.todo_count.labels(
                     completed='false', userid=task["userId"]).inc()
-                self.todo_done.labels(todo_id=task["id"]).set("1")
+                self.todo_done.labels(
+                    todo_id=task["id"], title=task["title"]).set("1")
             else:
                 self.todo_count.labels(
                     completed='true', userid=task["userId"]).inc()
-                self.todo_done.labels(todo_id=task["id"]).set("0")
+                self.todo_done.labels(
+                    todo_id=task["id"], title=task["title"]).set("0")
 
 
 def main():
